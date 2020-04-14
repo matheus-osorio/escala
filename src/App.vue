@@ -37,7 +37,7 @@
       </div>
     </nav>
 
-    <Excel :users="users" :colors="colors" v-if="active == 'Tabela'" />
+    <Excel :date="date" :users="users" :colors="colors" v-if="active == 'Tabela'" />
     <Visualizacao :users="users" :colors="colors" v-if="active == 'Visualizacao'" />
   </div>
 </template>
@@ -434,19 +434,24 @@ export default {
         }
       ],
       colors: [
-        { name: "TT", color: "red" },
-        { name: "AT", color: "blue" },
-        { name: "CC", color: "orange" },
-        { name: "BT", color: "purple" },
-        { name: "ST", color: "green" }
-      ]
+        { name: "TT", color: "red" , fullName:"nome Completo TT"},
+        { name: "AT", color: "blue" , fullName:"nome Completo T"},
+        { name: "CC", color: "orange" , fullName:"nome Completo CC"},
+        { name: "BT", color: "purple" , fullName:"nome Completo BT"},
+        { name: "ST", color: "green" , fullName:"nome Completo ST"}
+      ],
+      date:{
+        day:13,
+        month:4,
+        year: 2020
+      }
     };
   },
   components: {
     Excel,
     Visualizacao
   },
-  mounted() {
+  /*mounted() {
     window.onbeforeunload = this.beforeUnload
   },
   methods: {
@@ -461,7 +466,7 @@ export default {
       // For Safari
       return "Tenha certeza que salvou tudo antes de sair";
     }
-  }
+  }*/
 };
 </script>
 
@@ -476,6 +481,7 @@ export default {
   --space-view: 50px;
   --space: 0px;
   --painter-height: 200px;
+  --painter-width:500px;
   --vertical-space: 10px;
 }
 

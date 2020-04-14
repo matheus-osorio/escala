@@ -2,6 +2,11 @@
   <div>
       <table draggable="false">
           <thead>
+              <th align="center"><br></th>
+              <th align="center"><br></th>
+              <th align="center" class="grid week" v-for="day in weekDays" :key="day.id">{{day}}</th>
+          </thead>
+          <thead>
               <th align="center" class="grid">Usuário</th>
               <th align="center" class="grid">Trabalho</th>
               <th align="center" class="grid status" v-for="day in days" :key="day.id">{{day}}</th>
@@ -25,6 +30,7 @@ export default {
         painting:{},
         colors: {},
         users: {},
+        date:{},
         return: {}
     },
     data(){
@@ -45,6 +51,21 @@ export default {
             }
 
             return obj
+        },
+        weekDays(){
+            const d = this.date.day
+            const m = this.date.month
+            const y = this.date.year
+            const date = new Date(y,m,d)
+            const startDay = date.getDay()
+            const monthSize = this.users[0].status.length
+            const daysOfTheWeek = ['DOM','SEG','TER','QUA','QUI','SEX','SAB']
+            const daysOfMonth = []
+            for(let i=0;i<monthSize;i++){
+                daysOfMonth.push(daysOfTheWeek[(startDay + i)%7])
+            }
+            return daysOfMonth
+
         }
     },
     methods:{
@@ -160,6 +181,10 @@ export default {
 </script>
 
 <style scoped>
+
+.week{
+    font-size:0.8rem;
+}
 
 div{
     width:100%;

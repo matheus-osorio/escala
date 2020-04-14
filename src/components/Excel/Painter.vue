@@ -3,7 +3,7 @@
    <table class="excel-table">
        <tbody>
         <tr class="row-colors" v-for="line in colorsWithColumns" :key="line.id">
-            <td v-for="data in line" :key="data.id" @click="$emit('changeColor',data.name)">
+            <td v-for="data in line" :key="data.id" @click="$emit('changeColor',data.name)" @mouseenter="turnTextOn(data)" @mouseleave="turnTextOff()">
               <Button :color="data.color" :name="data.name"></Button>
             </td>
         </tr>
@@ -20,7 +20,8 @@ export default {
         Button
     },
     props:{
-        colors: {}
+        colors: {},
+        text:{}
     },
     computed:{
         colorsWithColumns(){
@@ -41,6 +42,18 @@ export default {
             }
             console.log(matrix)
             return matrix
+        }
+    },
+    methods:{
+        turnTextOn(data){
+            if(data.name != ''){
+                this.text.text = data.fullName
+                this.text.color = data.color
+                this.text.hide = false
+            }
+        },
+        turnTextOff(){
+            this.text.hide = true
         }
     }
 }

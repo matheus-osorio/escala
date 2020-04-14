@@ -1,29 +1,39 @@
 <template>
   <div id="Excel">
       <Options @resetValue="resetValue"   @changeColor="changeColor" class="Options-menu" id="Options"></Options>
-     <Painter :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"/>
-     <Table :return="func" :users="users" :colors="colors" :painting="statusName" id="data"></Table>
+     <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
+     <Extended :text="textData" id="text"></Extended>
+     <Table :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" id="data"></Table>
   </div>
 </template>
 
 <script>
+
 import Painter from './Painter'
 
 import Table from './Table'
 
 import Options from './Options'
 
+import Extended from './Text'
+
 export default {
  components:{
      Painter,
      Table,
-     Options
+     Options,
+     Extended
  },
- props:['users','colors'],
+ props:['users','colors','date'],
  data(){
      return {
         statusName:"AT",
-        func: {}
+        func: {},
+        textData:{
+            color:'blue',
+            text:'Valor de Teste',
+            hide:true
+        }
      }
  },
  methods:{
@@ -43,12 +53,12 @@ export default {
 
 #Excel{
     display:grid;
-    grid-template-columns: var(--user-width) 1fr;
+    grid-template-columns: var(--user-width) var(--painter-width) 1fr;
     grid-template-rows: var(--space) var(--painter-height) 1fr;
     grid-template-areas: 
-    "space space"
-    "Options painter"
-    "data data";
+    "space space space"
+    "Options painter text"
+    "data data data";
 }
 
 #painter{
@@ -58,6 +68,10 @@ export default {
 
 #data{
     grid-area: data;
+}
+
+#text{
+    grid-area: text;
 }
 
 .Options-menu{

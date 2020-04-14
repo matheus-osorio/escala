@@ -29,7 +29,7 @@ export default {
 <style scoped>
 .table-custom{
   overflow-y: auto;
-  height: 100vh;
+  height: calc(100vh - 100px);
 }
 
 .noborder{
