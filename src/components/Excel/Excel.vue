@@ -1,9 +1,9 @@
 <template>
   <div id="Excel">
-      <Options @resetValue="resetValue"   @changeColor="changeColor" class="Options-menu" id="Options"></Options>
+     <Options @undoFilter="undoFilter" @resetValue="resetValue" @toggleFilter="toggleFilter"  @changeColor="changeColor" class="Options-menu" id="Options"></Options>
      <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
-     <Extended :text="textData" id="text"></Extended>
-     <Table :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" id="data"></Table>
+     <Extras :current="current" :text="textData" id="extras" @changeCurrent="changeCurrent"></Extras>
+     <Table :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" id="data" @toggleFilter="$emit('toggleFilter')"></Table>
   </div>
 </template>
 
@@ -15,25 +15,26 @@ import Table from './Table'
 
 import Options from './Options'
 
-import Extended from './Text'
+import Extras from './Extras'
 
 export default {
  components:{
      Painter,
      Table,
      Options,
-     Extended
+     Extras
  },
- props:['users','colors','date'],
+ props:['users','colors','date','filterObj','func'],
  data(){
      return {
         statusName:"AT",
-        func: {},
         textData:{
             color:'blue',
             text:'Valor de Teste',
             hide:true
-        }
+        },
+        current:"usuarios",
+        filter:false
      }
  },
  methods:{
@@ -42,7 +43,20 @@ export default {
      },
      resetValue(){
          this.func.reset()
-     }
+     },
+     changeCurrent(newTable){
+         this.current = newTable
+     },
+     undoFilter(){
+         this.changeColor(undefined)
+         this.users.forEach(user => user.show = true)
+         this.$emit('resetFilter')
+     },
+    toggleFilter(){
+        this.changeColor(undefined)
+        this.filter = true
+    }
+
 
  }
 }
@@ -57,7 +71,7 @@ export default {
     grid-template-rows: var(--space) var(--painter-height) 1fr;
     grid-template-areas: 
     "space space space"
-    "Options painter text"
+    "Options painter extras"
     "data data data";
 }
 
@@ -70,8 +84,8 @@ export default {
     grid-area: data;
 }
 
-#text{
-    grid-area: text;
+#extras{
+    grid-area: extras;
 }
 
 .Options-menu{

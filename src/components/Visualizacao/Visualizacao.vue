@@ -35,7 +35,7 @@ export default {
 #visualizacao{
     height: 100%;
     width: 100%;
-
+    overflow-y:auto;
     display: grid;
 
     grid-template-columns: var(--menu-width) var(--vertical-space) 1fr;
@@ -54,5 +54,28 @@ export default {
 
 #view{
     grid-area: view;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  margin-right: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 50px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #999999; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #666666; 
 }
 </style>

@@ -28,13 +28,19 @@ export default {
                     color: 'red',
                     name: "fas fa-times",
                     value: undefined,
-                    func: "changeColor"
+                    func: "undoFilter"
                 },
                 {
                     color: 'blue',
                     name: 'far fa-save',
                     value: undefined,
                     func: 'save'
+                },
+                {
+                    color: '#de7237',
+                    name: 'fas fa-filter',
+                    value: undefined,
+                    func: 'toggleFilter'
                 }
             ]
         }
