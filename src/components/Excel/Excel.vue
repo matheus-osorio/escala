@@ -3,7 +3,7 @@
      <Options @undoFilter="undoFilter" @resetValue="resetValue" @toggleFilter="toggleFilter"  @changeColor="changeColor" class="Options-menu" id="Options"></Options>
      <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
      <Extras :current="current" :text="textData" id="extras" @changeCurrent="changeCurrent"></Extras>
-     <Table :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" id="data" @toggleFilter="$emit('toggleFilter')"></Table>
+     <Table :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" id="data" @toggleFilter="$emit('toggleFilter',filter)"></Table>
   </div>
 </template>
 
@@ -48,6 +48,7 @@ export default {
          this.current = newTable
      },
      undoFilter(){
+         this.filter = false
          this.changeColor(undefined)
          this.users.forEach(user => user.show = true)
          this.$emit('resetFilter')

@@ -1,15 +1,15 @@
 <template>
   <div class="table-custom">
     <table class="small-text fullsize" v-if="current =='usuarios'">
-      <thead>
-        <th align="center" class="grid text-nowrap" v-for="data in dropdownObjects" :key="data.id">
+      <thead class="color-orange">
+        <th align="center" class="grid text-nowrap fixed-23" v-for="data in dropdownObjects" :key="data.id">
           {{data.text}}
           <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,data.dropdown)}"></i>
         </th>
       </thead>
       <tbody>
-        <tr v-for="line in usersFiltered" :key="line.id">
-          <td class="grid">{{line.number}}</td>
+        <tr v-for="(line,index) in usersFiltered" :class="{'color-grey': index%2 == 1}" :key="line.id" class="fixed-23">
+          <td class="grid color-red">{{line.number}}</td>
           <td class="grid">{{line.Mat}}</td>
           <td class="grid">{{line.adm}}</td>
           <td class="grid">{{line.CPF}}</td>
@@ -24,7 +24,7 @@
           <td class="grid">{{line.PER}}</td>
           <td class="grid">{{line.HT}}</td>
           <td class="grid">{{line.salario.maior}}</td>
-          <td class="grid">{{line.ferias}}</td>
+          <td class="grid"><i :class="{'fas fa-times': !line.ferias,'fas fa-check':line.ferias}"></i></td>
           <td class="grid">{{line.user}}</td>
           <td class="grid">{{line.job}}</td>
         </tr>
@@ -42,8 +42,8 @@
         <th align="center" class="grid week" v-for="day in weekDays" :key="day.id">{{day}}</th>
       </thead>
       <thead>
-        <th align="center" class="grid">Usuário</th>
-        <th align="center" class="grid">Trabalho</th>
+        <th align="center" class="grid">Usuário <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
+        <th align="center" class="grid">Trabalho <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
         <th align="center" class="grid status" v-for="day in days" :key="day.id">{{day}}</th>
       </thead>
       <tbody>
@@ -86,6 +86,7 @@ export default {
     return: {},
     current: {},
     filter: {},
+    colorFilter:{},
     filterObj: {},
     dolumnName:{}
   },
@@ -174,6 +175,9 @@ export default {
       this.dragCoordinates.push(this.getXY(event));
     },
     paintRange(event) {
+
+      if(this.filter){return}
+
       this.makeCopy();
 
       this.dragRange(event, false);
@@ -264,6 +268,7 @@ export default {
       this.updateDropdown(event, obj);
       obj.display = !obj.display;
     },
+
     updateDropdown(event, obj) {
       const el = event.target.parentNode;
 
@@ -349,9 +354,26 @@ export default {
   font-size: 0.8rem;
 }
 
+.color-red{
+  background-color:#ff6a57 !important;
+}
+
+.color-orange{
+  background-color:#fce51e !important;
+}
+
+.color-grey{
+  background-color:lightgray;
+}
+
 table,
 th {
   z-index: -1;
+  text-align: center !important;
+}
+
+tr{
+  text-align: center !important;
 }
 
 i{
@@ -363,7 +385,7 @@ div {
 }
 
 .table-custom {
-  overflow-x: auto;
+  overflow-x: hidden;
 }
 
 .grid {
@@ -396,7 +418,13 @@ div {
 
 .fullsize {
   width: 100%;
+  margin-top:23px;
 }
+
+.fixed-23{
+  line-height: 24px !important;
+}
+
 
 .fixed-head {
   height: 32px !important;

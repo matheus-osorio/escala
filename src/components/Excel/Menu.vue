@@ -3,6 +3,7 @@
         <div class="btn-group group-custom ml-3" role="group" aria-label="Basic example">
         <button type="button" class="btn btn-secondary" @click="$emit('changeCurrent','status')">Status</button>
         <button type="button" class="btn btn-secondary" @click="$emit('changeCurrent','usuarios')">Usuários</button>
+        
     </div>
     </div>
 </template>

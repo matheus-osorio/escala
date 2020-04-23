@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-light nav-custom">
+    <nav id="nav" class="navbar navbar-expand-lg navbar-light nav-custom">
       <a class="navbar-brand" href="#">
         <img class="Logo" src="./img/logo.svg" alt />
       </a>
@@ -18,6 +18,13 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
+          <li
+            class="nav-item pr-2 pl-2 item-custom"
+            :class="{current: active=='Status'}"
+            @click="active='Status'"
+          >
+            <a class="nav-link text-light" href="#">Status x Dia</a>
+          </li>
           <li
             class="nav-item pr-2 pl-2 item-custom"
             :class="{current: active=='Tabela'}"
@@ -39,12 +46,14 @@
 
     <Excel :func="func" :filterObj="filterObj" :date="date" :users="users" :colors="colors" v-if="active == 'Tabela'"  @toggleFilter="filterList" @resetFilter="resetFilter(true)"/>
     <Visualizacao :users="users" :colors="colors" v-if="active == 'Visualizacao'" />
+    <Status :users="users" v-if="active == 'Status'"/>
   </div>
 </template>
 
 <script>
 import Excel from "./components/Excel/Excel";
 import Visualizacao from "./components/Visualizacao/Visualizacao";
+import Status from './components/Status/Status'
 
 export default {
   name: "App",
@@ -307,7 +316,8 @@ export default {
   },
   components: {
     Excel,
-    Visualizacao
+    Visualizacao,
+    Status
   },
   mounted() {
     window.onbeforeunload = this.beforeUnload
@@ -332,7 +342,8 @@ export default {
         this.filterObj = []
       }
     },
-    filterList(){
+    filterList(filterMode){
+      if(!filterMode){return}
       this.resetFilter()
       for(const filter of this.filterObj){ 
         const direction = this.columnName[filter.index]
@@ -406,7 +417,11 @@ export default {
   grid-template-areas: "nav" "table";
 }
 
+#nav{
+  grid-area:nav
+}
+
 #table {
-  grid-area: "table";
+  grid-area: table;
 }
 </style>
