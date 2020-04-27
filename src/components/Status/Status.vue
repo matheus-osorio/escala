@@ -2,10 +2,10 @@
   <div class="big-table">
       <table v-for="(status) in usersByDay" :key="status.id" class="table" align="center">
           <thead class="custom-background">
-              <th class="category">{{status.name}}</th>
-              <th class="fixed-width" v-for="i in (status.days[0].length)" :key="i.id"><span>{{i}}</span></th>
+              <th class="category sticky" @click="toggleTable(status)">{{status.name}}</th>
+              <th class="fixed-width sticky custom-background" v-for="i in (status.days[0].length)" :key="i.id"><span>{{i}}</span></th>
           </thead>
-          <tbody>
+          <tbody v-if="status.show">
               <tr v-for="(day,index) of status.days" :key="day.id" :class="{dark:index%2==1}">
                   <td>{{index + 1}}</td>
                   <td v-for="obj of day" :key="obj.id">
@@ -20,8 +20,18 @@
 <script>
 export default {
     props:['users'],
-    computed:{
-        usersByDay(){
+    data(){
+        return {
+            usersByDay: this.usersByDayFunction()
+        }
+    },
+    methods:{
+        toggleTable(status){
+            console.log(status)
+            status.show = !status.show
+            console.log('teste')
+        },
+        usersByDayFunction(){
             let fullObj = {}
             for(const user of this.users){
                 const status = user.status
@@ -29,6 +39,7 @@ export default {
                     if(fullObj[status[index]] == undefined){
                         fullObj[status[index]] = {
                             name: status[index],
+                            show: false,
                             days: status.map(() => [])
                         }
                         
@@ -78,7 +89,7 @@ export default {
     background-color:rgba(206, 206, 206, 0.514);
 }
 .custom-background{
-    background-color:#91b2e68f;
+    background-color:#a2c5fc;
 }
 
 .fixed-width{
@@ -88,7 +99,17 @@ export default {
 .category{
     width:60px;
     background-color:#3985fd;
+    cursor: pointer;
+}
 
+.sticky{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+hidden{
+    display:none;
 }
 
 table {

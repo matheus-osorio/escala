@@ -2,7 +2,7 @@
   <div class="table-custom">
     <table class="small-text fullsize" v-if="current =='usuarios'">
       <thead class="color-orange">
-        <th align="center" class="grid text-nowrap fixed-23" v-for="data in dropdownObjects" :key="data.id">
+        <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" v-for="data in dropdownObjects" :key="data.id">
           {{data.text}}
           <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,data.dropdown)}"></i>
         </th>
@@ -42,9 +42,9 @@
         <th align="center" class="grid week" v-for="day in weekDays" :key="day.id">{{day}}</th>
       </thead>
       <thead>
-        <th align="center" class="grid">Usuário <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
-        <th align="center" class="grid">Trabalho <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
-        <th align="center" class="grid status" v-for="day in days" :key="day.id">{{day}}</th>
+        <th align="center" class="grid sticky bg-light">Usuário <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
+        <th align="center" class="grid sticky bg-light">Trabalho <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
+        <th align="center" class="grid status sticky bg-light" v-for="day in days" :key="day.id">{{day}}</th>
       </thead>
       <tbody>
         <tr draggable="false" v-for="(line,lindex) in usersFiltered" :key="line.id">
@@ -264,7 +264,6 @@ export default {
     },
 
     toggleDropdown(event, obj) {
-      console.log(obj)
       this.updateDropdown(event, obj);
       obj.display = !obj.display;
     },
@@ -350,6 +349,15 @@ export default {
 </script>
 
 <style scoped>
+
+.sticky{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-style: solid;
+  border-width: 1px;
+}
+
 .week {
   font-size: 0.8rem;
 }
@@ -371,7 +379,9 @@ th {
   z-index: -1;
   text-align: center !important;
 }
-
+table{
+  margin-bottom: 60px;
+}
 tr{
   text-align: center !important;
 }
@@ -385,7 +395,7 @@ div {
 }
 
 .table-custom {
-  overflow-x: hidden;
+  height: 100%;
 }
 
 .grid {
@@ -413,7 +423,7 @@ div {
 }
 
 .small-text {
-  font-size: 0.9rem;
+  font-size: 0.82rem;
 }
 
 .fullsize {
@@ -435,4 +445,5 @@ div {
   height: 28px;
   width: 28px;
 }
+
 </style>

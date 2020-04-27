@@ -74,6 +74,7 @@ export default {
     "space space space"
     "Options painter extras"
     "data data data";
+    overflow-y: scroll;
 }
 
 #painter{
@@ -99,4 +100,27 @@ export default {
     grid-area: Options;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height:5px;
+  margin-right: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 50px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #999999; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #666666; 
+}
 </style>

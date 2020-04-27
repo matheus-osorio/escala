@@ -50,15 +50,42 @@ div{
     border-style: solid;
     border-width: 0px 1px 0px 0px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.80rem;
 }
 .dropdown-custom{
     display: inline-block;
     position: absolute;
-    z-index: 1000;
+    z-index: 1001;
     top: var(--top-var);
     left: var(--left-var);
     width:var(--width-var) !important;
     background-color:#d6d6d6;
+    max-height: 272px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+  height:5px;
+  margin-right: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px darkgray; 
+  border-radius: 50px;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #999999; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #666666; 
 }
 </style>
