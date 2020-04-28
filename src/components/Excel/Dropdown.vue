@@ -4,7 +4,7 @@
           <tbody>
               <tr class="composite"> <i class="fas fa-search icon"></i> <input @keyup="filterOptions" type="text" class="custom-input"></tr>
               <tr  @click="params.display = false">
-                  <td @click="$emit('filterClick',createFilter(undefined))"><br></td>
+                  <td @click="$emit('filterClick',createFilter({'data':undefined}))"><br></td>
               </tr>
               <tr v-for="item in itemsToShow" :key="item.id" @click="params.display = false">
                   <td @click="$emit('filterClick',createFilter(item))">{{item.data}}</td>

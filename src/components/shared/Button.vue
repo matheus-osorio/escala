@@ -1,13 +1,13 @@
 <template>
   <fragment>
-    <button v-if="!icon" :style="colorStyle()" class="btn btn-custom">{{name}}</button>
-    <button v-if="icon" :style="colorStyle()" class="btn btn-custom"> <i :class="name"></i></button>
+    <button v-if="!icon" :class="{'active':active}" :style="colorStyle()" class="btn btn-custom">{{name}}</button>
+    <button v-if="icon" :class="{'active':active}" :style="colorStyle()" class="btn btn-custom"> <i :class="name"></i></button>
   </fragment>
 </template>
 
 <script>
 export default {
-    props:['color','name','icon'],
+    props:['color','name','icon','active'],
     methods:{
       colorStyle(){
         return {
@@ -32,4 +32,9 @@ export default {
   color:whitesmoke
 }
 
+
+.active{
+  background-color: var(--color);
+  color:whitesmoke
+}
 </style>
