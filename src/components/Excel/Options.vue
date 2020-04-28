@@ -25,8 +25,8 @@ export default {
                     func: "resetValue"
                 },
                 {
-                    color: 'red',
-                    name: "fas fa-times",
+                    color: 'grey',
+                    name: "fas fa-mouse-pointer",
                     value: undefined,
                     func: "undoFilter"
                 },

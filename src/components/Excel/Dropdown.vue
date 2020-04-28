@@ -2,11 +2,12 @@
   <div class="dropdown-custom" :style="getPosition()" v-show="params.display == true">
       <table>
           <tbody>
+              <tr class="composite"> <i class="fas fa-search icon"></i> <input @keyup="filterOptions" type="text" class="custom-input"></tr>
               <tr  @click="params.display = false">
                   <td @click="$emit('filterClick',createFilter(undefined))"><br></td>
               </tr>
-              <tr v-for="item in params.setOfItems" :key="item.id" @click="params.display = false">
-                  <td @click="$emit('filterClick',createFilter(item))">{{item}}</td>
+              <tr v-for="item in itemsToShow" :key="item.id" @click="params.display = false">
+                  <td @click="$emit('filterClick',createFilter(item))">{{item.data}}</td>
               </tr>
           </tbody>
       </table>
@@ -16,7 +17,11 @@
 <script>
 export default {
     props:['params','reference','index'],
-
+    data(){
+        return {
+            itemsToShow: this.itemsFiltered()
+        }
+    },
     methods:{
         getPosition(){
             return{
@@ -28,8 +33,19 @@ export default {
         createFilter(item){
             return {
                 index: this.index,
-                value: item
+                value: item.data
             }
+        },
+        itemsFiltered(){
+            const filtered = this.params.setOfItems.filter((item) => { return item.show})
+            return filtered
+        },
+        filterOptions(event){
+            const value = event.target.value
+            console.log(value)
+
+            this.itemsToShow = this.params.setOfItems.filter((item) => { return item.data.toUpperCase().includes(value.toUpperCase())})
+            console.log(this.itemsToShow)
         }
     }
 }
@@ -40,6 +56,24 @@ export default {
 tr,td{
     height: 24px;
     width: var(--width-var);
+}
+
+.custom-input{
+    width:90%;
+    margin-right:3px;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px;
+    border:1px;
+}
+
+.icon{
+    font-size: 0.7rem;
+}
+
+.composite{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 tr:hover{

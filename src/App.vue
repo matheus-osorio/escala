@@ -55,7 +55,7 @@
       @resetFilter="resetFilter(true)"
     />
     <Visualizacao :users="users" :colors="colors" v-if="active == 'Visualizacao'" />
-    <Status :users="users" v-if="active == 'Status'" />
+    <Status :users="users" v-if="active == 'Status'" :colors="colors"/>
   </div>
 </template>
 

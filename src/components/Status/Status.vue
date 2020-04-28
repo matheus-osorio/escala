@@ -2,7 +2,7 @@
   <div class="big-table">
       <table v-for="(status) in usersByDay" :key="status.id" class="table" align="center">
           <thead class="custom-background">
-              <th class="category sticky" @click="toggleTable(status)">{{status.name}}</th>
+              <th class="category sticky" @click="toggleTable(status)" :style="{'background-color':colorsObj[status.name]}">{{status.name}}</th>
               <th class="fixed-width sticky custom-background" v-for="i in (status.days[0].length)" :key="i.id"><span>{{i}}</span></th>
           </thead>
           <tbody v-if="status.show">
@@ -19,10 +19,21 @@
 
 <script>
 export default {
-    props:['users'],
+    props:['users','colors'],
     data(){
         return {
             usersByDay: this.usersByDayFunction()
+        }
+    },
+
+    computed:{
+        colorsObj(){
+            const obj = {}
+            this.colors.forEach((color) => {
+                obj[color.name] = color.color
+            })
+            console.log('este aqui:',obj)
+            return obj
         }
     },
     methods:{
@@ -89,7 +100,7 @@ export default {
     background-color:rgba(206, 206, 206, 0.514);
 }
 .custom-background{
-    background-color:#a2c5fc;
+    background-color:#cccccc;
 }
 
 .fixed-width{
@@ -98,7 +109,6 @@ export default {
 
 .category{
     width:60px;
-    background-color:#3985fd;
     cursor: pointer;
 }
 
