@@ -32,7 +32,6 @@ export default {
             console.log('entrou')
            const x = event.clientX
            const y = event.clientY
-           console.log(x,y)
 
         }
     }

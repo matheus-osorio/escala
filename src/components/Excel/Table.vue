@@ -1,5 +1,6 @@
 <template>
   <div class="table-custom">
+    <Beneficios :users="users" :colors="colors" :hours="hours" v-if="current=='beneficios'"/>
     <table class="small-text fullsize" v-if="current =='usuarios'">
       <thead class="color-orange">
         <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" v-for="data in dropdownObjects" :key="data.id">
@@ -39,12 +40,12 @@
         <th align="center">
           <br />
         </th>
-        <th align="center" class="grid week" v-for="day in weekDays" :key="day.id">{{day}}</th>
+        <th align="center" class="grid week" v-for="day in weekDays" :key="day.id" :class="{'weekend weekend-background':day.weekend}">{{day.name}}</th>
       </thead>
       <thead>
         <th align="center" class="grid sticky bg-light">Usuário <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
         <th align="center" class="grid sticky bg-light">Trabalho <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
-        <th align="center" class="grid status sticky bg-light" v-for="day in days" :key="day.id">{{day}}</th>
+        <th align="center" class="grid status sticky bg-light" v-for="(day,index) in days" :key="day.id" :class="{'weekend weekend-background':weekDays[index].weekend}">{{day}}</th>
       </thead>
       <tbody>
         <tr draggable="false" v-for="(line,lindex) in usersFiltered" :key="line.id">
@@ -57,12 +58,13 @@
             :style="{'background-color': colorObj[value]}"
             :column="cindex"
             :line="lindex"
-            :id="'index' + lindex + '' + cindex"
+            :id="'index' + lindex + '-' + cindex"
             v-for="(value,cindex) in line.status"
             @mouseup="paintRange"
             @mousedown="(event) => {dragRange(event,true)}"
             @mouseenter="selectedArea"
             :key="value.id"
+            :class="{weekend:weekDays[cindex].weekend}"
           >{{value}}</td>
         </tr>
       </tbody>
@@ -73,10 +75,12 @@
 <script>
 import Vue from "vue";
 import Dropdown from "./Dropdown";
+import Beneficios from './Beneficios';
 
 export default {
   components: {
-    Dropdown
+    Dropdown,
+    Beneficios
   },
   props: {
     painting: {},
@@ -88,7 +92,8 @@ export default {
     filter: {},
     colorFilter:{},
     filterObj: {},
-    dolumnName:{}
+    dolumnName:{},
+    hours:{}
   },
   data() {
     return {
@@ -114,13 +119,19 @@ export default {
       const d = this.date.day;
       const m = this.date.month;
       const y = this.date.year;
+      console.log('data:',this.date)
       const date = new Date(y, m, d);
       const startDay = date.getDay();
       const monthSize = this.users[0].status.length;
       const daysOfTheWeek = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
       const daysOfMonth = [];
       for (let i = 0; i < monthSize; i++) {
-        daysOfMonth.push(daysOfTheWeek[(startDay + i) % 7]);
+        let day = (startDay + i) % 7
+        let dayName = daysOfTheWeek[day]
+        daysOfMonth.push({
+          name: dayName,
+          weekend: day == 0 || day == 6
+        });
       }
       return daysOfMonth;
     },
@@ -202,7 +213,7 @@ export default {
 
       for (let x = 0; x < xMax; x++) {
         for (let y = 0; y < yMax; y++) {
-          let square = document.querySelector("#" + "index" + x + "" + y);
+          let square = document.querySelector("#" + "index" + x + "-" + y);
           square.classList.remove("selected");
         }
       }
@@ -239,12 +250,13 @@ export default {
       i.y = aux;
       const xMax = this.users.length;
       const yMax = this.users[0].status.length;
-
+      
       for (let x = 0; x < xMax; x++) {
         for (let y = 0; y < yMax; y++) {
-          let square = document.querySelector("#" + "index" + x + "" + y);
+          let square = document.querySelector("#" + "index" + x + "-" + y);
           if (x >= i.x && x <= e.x && y >= i.y && y <= e.y) {
             square.classList.add("selected");
+            
           } else {
             square.classList.remove("selected");
           }
@@ -292,10 +304,10 @@ export default {
 
         el = el.offsetParent;
       }
-      console.log('pos:',xPos,yPos)
+      
       xPos += -excel.parentElement.scrollLeft ;
       yPos += -excel.parentElement.scrollTop;
-      console.log('pos:',xPos,yPos)
+      
       return {
         x: xPos,
         y: yPos
@@ -353,6 +365,19 @@ export default {
   z-index: 1000;
   border-style: solid;
   border-width: 1px;
+}
+
+.weekend{
+  filter: grayscale(60%) brightness(80%);
+  color:aliceblue ;
+  border-color:black !important;
+  z-index: 2;
+}
+
+.weekend-background{
+  filter: grayscale(0%) brightness(100%) !important;
+  background-color:lightsalmon !important;
+  color:black !important;
 }
 
 .week {
@@ -416,7 +441,9 @@ div {
 }
 
 .selected {
+  filter: grayscale(0%) brightness(100%) !important;
   background-color: #2384b8 !important;
+  color:black;
 }
 
 .small-text {

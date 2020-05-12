@@ -1,9 +1,10 @@
 <template>
   <div class="table-custom">
-    <table class="table text-nowrap">
+    <table class="table">
       <thead>
         <th>Nome</th>
         <th>Função</th>
+        <th></th>
       </thead>
       <tbody>
         <tr v-for="(user,index) in users" :key="user.id">
@@ -30,6 +31,8 @@ export default {
 .table-custom{
   overflow-y: auto;
   height: calc(100vh - 100px);
+  width: 100%;
+  font-size: 0.9rem;
 }
 
 .noborder{
