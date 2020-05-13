@@ -108,9 +108,9 @@ export default {
     Status
   },
   mounted() {
-    const src = 'http://localhost:3000/'
+    const src = 'http://webrun.perbras.com.br/webapp/'
     window.onbeforeunload = this.beforeUnload;
-    fetch(src + 'colors')
+    fetch(src + 'colorAPI.rule?sys=MDC')
     .then(json => {
       console.log(json)
       return json.json()
@@ -121,7 +121,7 @@ export default {
       })
     })
 
-    fetch(src + 'users')
+    fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`)
     .then(json => {
       return json.json()
     })
@@ -131,7 +131,7 @@ export default {
       })
     })
 
-    fetch(src + 'hours')
+    fetch(src + 'horaAPI.rule?sys=MDC')
     .then(json => {
       return json.json()
     })
