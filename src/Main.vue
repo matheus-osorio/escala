@@ -54,6 +54,7 @@
       v-if="active == 'Tabela'"
       @toggleFilter="filterList"
       @resetFilter="resetFilter(true)"
+      @saveData="saveData"
     />
     <Visualizacao :users="users" :colors="colors" v-if="active == 'Visualizacao'" />
     <Status :users="users" v-if="active == 'Status'" :colors="colors"/>
@@ -95,11 +96,7 @@ export default {
       users: [],
       colors: [],
       hours:{},
-      date: {
-        day: 13,
-        month: 4,
-        year: 2020
-      }
+      date: {}
     };
   },
   components: {
@@ -108,6 +105,10 @@ export default {
     Status
   },
   mounted() {
+
+    this.date.day = 1
+    this.date.month = parseInt(this.$route.params.mes)
+    this.date.year = parseInt(this.$route.params.ano)
     const src = 'http://webrun.perbras.com.br/webapp/'
     window.onbeforeunload = this.beforeUnload;
     fetch(src + 'colorAPI.rule?sys=MDC')
@@ -139,9 +140,7 @@ export default {
       this.hours = obj
     })
 
-    this.date.day = 1
-    this.date.month = parseInt(this.$route.params.mes) - 1
-    this.date.year = parseInt(this.$route.params.ano)
+    
   },
   methods: {
     beforeUnload(e) {
@@ -155,6 +154,29 @@ export default {
       // For Safari
       return "Tenha certeza que salvou tudo antes de sair";
     },
+
+    createStringFromUsers(user){
+      let string = user.user
+
+      user.status.forEach(status => {
+        string += ';' + status
+      })
+
+      return string
+    },
+
+    saveData(){
+      this.users.forEach(user => {
+        let param = {
+          method:'POST',
+          cache:'no-store',
+          body:this.createStringFromUsers(user)
+        }
+
+        fetch(`http://webrun.perbras.com.br/webapp/inserirStatusAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,param)
+      })
+    },
+
     resetFilter(resetParameters = false) {
       for (const user of this.users) {
         user.show = true;

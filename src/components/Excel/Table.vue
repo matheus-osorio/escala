@@ -117,7 +117,7 @@ export default {
     },
     weekDays() {
       const d = this.date.day;
-      const m = this.date.month;
+      const m = this.date.month - 1;
       const y = this.date.year;
       console.log('data:',this.date)
       const date = new Date(y, m, d);
