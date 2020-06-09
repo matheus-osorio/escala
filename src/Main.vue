@@ -109,7 +109,7 @@ export default {
     this.date.day = 1
     this.date.month = parseInt(this.$route.params.mes)
     this.date.year = parseInt(this.$route.params.ano)
-    const src = 'http://webrun.perbras.com.br/webapp/'
+    const src = 'https://webrun.perbras.com.br/medicao/'
     window.onbeforeunload = this.beforeUnload;
     fetch(src + 'colorAPI.rule?sys=MDC')
     .then(json => {
@@ -167,13 +167,17 @@ export default {
 
     saveData(){
       this.users.forEach(user => {
+        console.log(this.createStringFromUsers(user))
         let param = {
           method:'POST',
           cache:'no-store',
           body:this.createStringFromUsers(user)
         }
 
-        fetch(`http://webrun.perbras.com.br/webapp/inserirStatusAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,param)
+        fetch(`https://webrun.perbras.com.br/medicao/inserirStatusAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,param)
+        .then((returnValue => {
+          console.log(returnValue)
+        }))
       })
     },
 
