@@ -15,10 +15,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
 export default {
     props:['params','reference','index'],
     data(){
         return {
+            directive: 'none',
             itemsToShow: this.itemsFiltered()
         }
     },
@@ -38,17 +40,39 @@ export default {
         },
         itemsFiltered(){
             const filtered = this.params.setOfItems.filter((item) => { return item.show})
+            console.log(this.params)
             return filtered
         },
         filterOptions(event){
             const value = event.target.value
-            console.log(value)
-
             this.itemsToShow = this.params.setOfItems.filter((item) => { return item.data.toUpperCase().includes(value.toUpperCase())})
-            console.log(this.itemsToShow)
         }
     }
 }
+
+Vue.directive('money',{
+    inserted(el){
+        let value = el.innerHTML
+        value = value.replace('.',',').replace(/(\d)(?=(?:\d{3})+,)/,'$1.')
+        el.innerHTML = value
+    }
+})
+
+Vue.directive('date',{
+  inserted(el){
+    let value = el.innerHTML
+      value = value.replace(/(\d{2})(\d{2})(\d{4})/g,'$1/$2/$3')
+      el.innerHTML = value
+  }
+})
+
+Vue.directive('cpf',{
+  inserted(el){
+    let value = el.innerHTML + ''
+      value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4')
+      el.innerHTML = value
+  }
+})
 </script>
 
 <style scoped>

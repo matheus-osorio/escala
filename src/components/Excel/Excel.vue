@@ -3,7 +3,7 @@
      <Options @undoFilter="undoFilter" @resetValue="resetValue" @toggleFilter="toggleFilter" @saveData="$emit('saveData')" @changeColor="changeColor" class="Options-menu" id="Options"></Options>
      <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
      <Extras :current="current" :text="textData" id="extras" @changeCurrent="changeCurrent"></Extras>
-     <Table :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" :hours="hours" id="data" @toggleFilter="$emit('toggleFilter',filter)"></Table>
+     <Table :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" :hours="hours" :complete="complete" id="data" @toggleFilter="$emit('toggleFilter',filter)"></Table>
   </div>
 </template>
 
@@ -24,7 +24,7 @@ export default {
      Options,
      Extras
  },
- props:['users','colors','date','filterObj','func','hours'],
+ props:['users','colors','date','filterObj','func','hours','complete'],
  data(){
      return {
         statusName:"AT",

@@ -51,6 +51,7 @@
       :users="users"
       :colors="colors"
       :hours="hours"
+      :complete="complete"
       v-if="active == 'Tabela'"
       @toggleFilter="filterList"
       @resetFilter="resetFilter(true)"
@@ -96,7 +97,8 @@ export default {
       users: [],
       colors: [],
       hours:{},
-      date: {}
+      date: {},
+      complete: true
     };
   },
   components: {
@@ -111,18 +113,9 @@ export default {
     this.date.year = parseInt(this.$route.params.ano)
     const src = 'https://webrun.perbras.com.br/medicao/'
     window.onbeforeunload = this.beforeUnload;
-    fetch(src + 'colorAPI.rule?sys=MDC')
-    .then(json => {
-      console.log(json)
-      return json.json()
-    })
-    .then(obj => {
-      obj.forEach((color) => {
-        this.colors.push(color)
-      })
-    })
 
-    fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`)
+
+     fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`)
     .then(json => {
       return json.json()
     })
@@ -131,6 +124,17 @@ export default {
         this.users.push(user)
       })
     })
+
+    fetch(src + 'colorAPI.rule?sys=MDC')
+    .then(json => {
+      return json.json()
+    })
+    .then(obj => {
+      obj.forEach((color) => {
+        this.colors.push(color)
+      })
+    })
+
 
     fetch(src + 'horaAPI.rule?sys=MDC')
     .then(json => {
@@ -156,7 +160,7 @@ export default {
     },
 
     createStringFromUsers(user){
-      let string = user.user
+      let string = user.Mat
 
       user.status.forEach(status => {
         string += ';' + status
@@ -167,7 +171,6 @@ export default {
 
     saveData(){
       this.users.forEach(user => {
-        console.log(this.createStringFromUsers(user))
         let param = {
           method:'POST',
           cache:'no-store',

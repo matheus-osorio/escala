@@ -12,19 +12,19 @@
         <tr v-for="(line,index) in usersFiltered" :class="{'color-grey': index%2 == 1}" :key="line.id" class="fixed-23">
           <td class="grid color-red">{{line.number}}</td>
           <td class="grid">{{line.Mat}}</td>
-          <td class="grid">{{line.adm}}</td>
-          <td class="grid">{{line.CPF}}</td>
+          <td v-date class="grid">{{line.adm}}</td>
+          <td v-cpf class="grid">{{line.CPF}}</td>
           <td class="grid">{{line.residencia}}</td>
           <td class="grid">{{line.VT}}</td>
-          <td class="grid">{{line.nasc}}</td>
-          <td class="grid">{{line.ASO}}</td>
+          <td v-date class="grid">{{line.nasc}}</td>
+          <td v-date class="grid">{{line.ASO}}</td>
           <td class="grid">{{line.setor}}</td>
           <td class="grid">{{line.regime}}</td>
-          <td class="grid">{{line.salario.base}}</td>
+          <td v-money class="grid">{{line.salario.base}}</td>
           <td class="grid">{{line.NOT}}</td>
           <td class="grid">{{line.PER}}</td>
           <td class="grid">{{line.HT}}</td>
-          <td class="grid">{{line.salario.maior}}</td>
+          <td v-money class="grid">{{line.salario.maior}}</td>
           <td class="grid"><i :class="{'fas fa-times': !line.ferias,'fas fa-check':line.ferias}"></i></td>
           <td class="grid">{{line.user}}</td>
           <td class="grid">{{line.job}}</td>
@@ -76,7 +76,6 @@
 import Vue from "vue";
 import Dropdown from "./Dropdown";
 import Beneficios from './Beneficios';
-
 export default {
   components: {
     Dropdown,
@@ -99,7 +98,7 @@ export default {
     return {
       dragCoordinates: {},
       history: [],
-      dropdownObjects: this.createDropdownObjects()
+      dropdownObjects: {}
     };
   },
   computed: {
@@ -119,7 +118,6 @@ export default {
       const d = this.date.day;
       const m = this.date.month - 1;
       const y = this.date.year;
-      console.log('data:',this.date)
       const date = new Date(y, m, d);
       const startDay = date.getDay();
       const monthSize = this.users[0].status.length;
@@ -315,7 +313,8 @@ export default {
     },
     createDropdownObjects(){
       const header = ['#','Mat','Dt Adm','CPF','Residencia','VT','Dt','Venc','Setor','Regime','Salário','NOT.','PER.','H.T.','Maior','FÉRIAS','Função','Nome']
-     const columnName = [['number'],['Mat'],['adm'],['CPF'],['residencia'],['VT'],['nasc'],['ASO'],['setor'],['regime'],['salario','base'],['NOT'],['PER'],['HT'],['salario','maior'],['ferias'],['user'],['job']]
+      const columnName = [['number'],['Mat'],['adm'],['CPF'],['residencia'],['VT'],['nasc'],['ASO'],['setor'],['regime'],['salario','base'],['NOT'],['PER'],['HT'],['salario','maior'],['ferias'],['user'],['job']]
+      const directive = ['none','none','date','cpf','none','none','date','date','none','none','money','none','none','none','money','none','none','none']
       const objArray = []
       for(const index in header){
 
@@ -331,11 +330,13 @@ export default {
           return value
         })
         array = Array.from(new Set(array))
+        
         let dropdown = {
           x:0,
           y:0,
           width:0,
           setOfItems:array.map((value) => {return {data:value,show:true}}),
+          directive: directive[index],
           display:false
         }
 
@@ -353,8 +354,37 @@ export default {
   mounted() {
     this.return.reset = this.resetValues;
     this.return.remake = this.remakeTable;
+    setTimeout(() => {
+      this.dropdownObjects = this.createDropdownObjects()
+    },1000)
   }
 };
+
+
+Vue.directive('money',{
+    inserted(el){
+        let value = el.innerHTML
+        value = value.replace('.',',').replace(/(\d)(?=(?:\d{3})+,)/,'$1.')
+        el.innerHTML = value
+    }
+})
+
+Vue.directive('date',{
+  inserted(el){
+    let value = el.innerHTML
+      value = value.replace(/(\d{2})(\d{2})(\d{4})/g,'$1/$2/$3')
+      el.innerHTML = value
+  }
+})
+
+Vue.directive('cpf',{
+  inserted(el){
+    let value = el.innerHTML + ''
+      value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/,'$1.$2.$3-$4')
+      el.innerHTML = value
+  }
+})
+
 </script>
 
 <style scoped>
