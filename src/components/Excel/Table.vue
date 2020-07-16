@@ -26,8 +26,8 @@
           <td class="grid">{{line.HT}}</td>
           <td v-money class="grid">{{line.salario.maior}}</td>
           <td class="grid"><i :class="{'fas fa-times': !line.ferias,'fas fa-check':line.ferias}"></i></td>
-          <td class="grid">{{line.user}}</td>
           <td class="grid">{{line.job}}</td>
+          <td class="grid">{{line.user}}</td>
         </tr>
       </tbody>
     </table>
@@ -313,7 +313,7 @@ export default {
     },
     createDropdownObjects(){
       const header = ['#','Mat','Dt Adm','CPF','Residencia','VT','Dt','Venc','Setor','Regime','Salário','NOT.','PER.','H.T.','Maior','FÉRIAS','Função','Nome']
-      const columnName = [['number'],['Mat'],['adm'],['CPF'],['residencia'],['VT'],['nasc'],['ASO'],['setor'],['regime'],['salario','base'],['NOT'],['PER'],['HT'],['salario','maior'],['ferias'],['user'],['job']]
+      const columnName = [['number'],['Mat'],['adm'],['CPF'],['residencia'],['VT'],['nasc'],['ASO'],['setor'],['regime'],['salario','base'],['NOT'],['PER'],['HT'],['salario','maior'],['ferias'],['job'],['user']]
       const directive = ['none','none','date','cpf','none','none','date','date','none','none','money','none','none','none','money','none','none','none']
       const objArray = []
       for(const index in header){

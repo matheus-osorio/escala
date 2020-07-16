@@ -40,7 +40,6 @@ export default {
         },
         itemsFiltered(){
             const filtered = this.params.setOfItems.filter((item) => { return item.show})
-            console.log(this.params)
             return filtered
         },
         filterOptions(event){

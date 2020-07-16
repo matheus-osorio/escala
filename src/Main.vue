@@ -111,7 +111,7 @@ export default {
     this.date.day = 1
     this.date.month = parseInt(this.$route.params.mes)
     this.date.year = parseInt(this.$route.params.ano)
-    const src = 'https://webrun.perbras.com.br/medicao/'
+    const src = 'https://webrun.perbras.com.br/'
     window.onbeforeunload = this.beforeUnload;
 
 

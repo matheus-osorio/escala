@@ -39,7 +39,7 @@ export default {
                     color: 'blue',
                     name: 'far fa-save',
                     value: undefined,
-                    func: 'save',
+                    func: 'saveData',
                     active:false,
                     hold: false
                 },
