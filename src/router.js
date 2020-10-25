@@ -6,7 +6,7 @@ import main from './Main.vue'
 
 
 const routes = [
-    {path:'/main/:mes/:ano',name:'main',component:main}
+    {path:'/main/:mes/:ano/:estab',name:'main',component:main}
 ]
 
 Vue.use(Router)

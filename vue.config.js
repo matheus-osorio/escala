@@ -1,4 +1,4 @@
 module.exports = {
-    publicPath: '/webapp/escala/',
+    publicPath: '/medicao/escala/',
     
 };

@@ -4,6 +4,7 @@
       <a class="navbar-brand" href="#">
         <img class="Logo" src="./img/logo.svg" alt />
       </a>
+      <span class="data-estilo">{{dateText}}</span>
       <button
         class="navbar-toggler"
         type="button"
@@ -71,6 +72,7 @@ export default {
   name: "App",
   data() {
     return {
+      dateText: {},
       active: "Tabela",
       filterObj: [],
       func: {},
@@ -107,15 +109,18 @@ export default {
     Status
   },
   mounted() {
-
+    // const estab = this.$route.params.estab
     this.date.day = 1
     this.date.month = parseInt(this.$route.params.mes)
     this.date.year = parseInt(this.$route.params.ano)
-    const src = 'https://webrun.perbras.com.br/'
+    this.dateText = this.createDateText()
+    //const src = 'http://webrun.perbras.com.br:8080/dev/'
+    // const src = 'https://webrun.perbras.com.br/medicao/'
+    const src = 'http://localhost:3000/'
     window.onbeforeunload = this.beforeUnload;
 
-
-     fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`)
+    fetch(src + 'users')
+    // fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&estab=${estab}`)
     .then(json => {
       return json.json()
     })
@@ -125,7 +130,8 @@ export default {
       })
     })
 
-    fetch(src + 'colorAPI.rule?sys=MDC')
+    fetch(src + 'colors')
+    // fetch(src + `colorAPI.rule?sys=MDC&estab=${estab}`)
     .then(json => {
       return json.json()
     })
@@ -135,8 +141,8 @@ export default {
       })
     })
 
-
-    fetch(src + 'horaAPI.rule?sys=MDC')
+    fetch(src + `hours`)
+    // fetch(src + `horaAPI.rule?sys=MDC&estab=${estab}`)
     .then(json => {
       return json.json()
     })
@@ -147,6 +153,10 @@ export default {
     
   },
   methods: {
+    createDateText(){
+      const order = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+      return order[this.date.month - 1] + " - " + this.date.year
+    },
     beforeUnload(e) {
       e = e || window.event;
 
@@ -159,29 +169,46 @@ export default {
       return "Tenha certeza que salvou tudo antes de sair";
     },
 
-    createStringFromUsers(user){
+    createStringFromUsers(user,param){
       let string = user.Mat
 
-      user.status.forEach(status => {
-        string += ';' + status
+      user[param].forEach(status => {
+        string += ';' + (status === '' ? '-': status)
       })
 
       return string
     },
 
-    saveData(){
+     saveData(){
+      document.querySelector('body').classList.add('progress-pointer')
+      let bodyStatus = ''
+      let bodyHE = ''
       this.users.forEach(user => {
-        let param = {
-          method:'POST',
-          cache:'no-store',
-          body:this.createStringFromUsers(user)
-        }
-
-        fetch(`https://webrun.perbras.com.br/medicao/inserirStatusAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,param)
-        .then((returnValue => {
-          console.log(returnValue)
-        }))
+        bodyStatus += this.createStringFromUsers(user,'status') + '\n'
+        bodyHE += this.createStringFromUsers(user,'extra') + '\n'
       })
+      bodyStatus = bodyStatus.slice(0,-1)
+      bodyHE = bodyHE.slice(0,-1)
+      const paramStatus = {
+        method:'POST',
+        cache:'no-store',
+        body: bodyStatus
+      }
+
+      const paramHE = {
+        method:'POST',
+        cache:'no-store',
+        body: bodyHE
+      }
+      console.log(bodyHE)
+      fetch(`https://webrun.perbras.com.br/medicao/inserirStatusAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,paramStatus)
+      .then(() => {
+        fetch(`https://webrun.perbras.com.br/medicao/inserirHEAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,paramHE)
+      .then(() => {
+        document.querySelector('body').classList.remove('progress-pointer')
+      })
+      })
+      
     },
 
     resetFilter(resetParameters = false) {
@@ -234,6 +261,10 @@ export default {
   --vertical-space: 10px;
 }
 
+.data-estilo{
+  font-family: 'Chilanka', cursive;
+}
+
 .nav-custom {
   padding-top: 0px;
   padding-bottom: 0px;
@@ -261,6 +292,10 @@ export default {
     rgba(31, 104, 111, 1) 60%,
     rgba(23, 242, 255, 1) 100%
   );
+}
+
+.progress-pointer {
+  cursor: progress !important;
 }
 
 #main {

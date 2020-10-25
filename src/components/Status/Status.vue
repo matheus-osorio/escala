@@ -3,13 +3,13 @@
       <table v-for="(status) in usersByDay" :key="status.id" class="table" align="center">
           <thead class="custom-background">
               <th class="category sticky" @click="toggleTable(status)" :style="{'background-color':colorsObj[status.name]}">{{status.name}}</th>
-              <th class="fixed-width sticky custom-background" v-for="i in (status.days[0].length)" :key="i.id"><span>{{i}}</span></th>
+              <th class="fixed-width sticky custom-background" v-for="i in (status.days[0].length)" :key="i.id"><span>{{i}} ({{status.working[i-1]}})</span></th>
           </thead>
           <tbody v-if="status.show">
               <tr v-for="(day,index) of status.days" :key="day.id" :class="{dark:index%2==1}">
                   <td>{{index + 1}}</td>
                   <td v-for="obj of day" :key="obj.id">
-                      {{obj.full}}
+                      <span class="normal-size">{{obj.user}}</span> - <span class="small-size">{{obj.job}}</span>
                   </td>
               </tr>
           </tbody>
@@ -32,7 +32,6 @@ export default {
             this.colors.forEach((color) => {
                 obj[color.name] = color.color
             })
-            console.log('este aqui:',obj)
             return obj
         }
     },
@@ -40,7 +39,6 @@ export default {
         toggleTable(status){
             console.log(status)
             status.show = !status.show
-            console.log('teste')
         },
         usersByDayFunction(){
             let fullObj = {}
@@ -64,6 +62,12 @@ export default {
                 }
             }
             fullObj = Object.values(fullObj)
+
+            
+            for(let value of fullObj){
+                value.working = value.days.map((day) => day.length)
+            }
+            console.log(fullObj)
             for(const obj of fullObj){
                 let columns = obj.days
                 let turned = []
@@ -90,6 +94,10 @@ export default {
 </script>
 
 <style scoped>
+
+.small-size{
+    font-size: 0.6rem;
+}
 
 .big-table{
     margin-top:12px;

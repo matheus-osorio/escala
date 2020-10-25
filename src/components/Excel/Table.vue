@@ -1,6 +1,5 @@
 <template>
   <div class="table-custom">
-    <Beneficios :users="users" :colors="colors" :hours="hours" v-if="current=='beneficios'"/>
     <table class="small-text fullsize" v-if="current =='usuarios'">
       <thead class="color-orange">
         <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" v-for="data in dropdownObjects" :key="data.id">
@@ -35,10 +34,10 @@
     <table draggable="false" v-if="current =='status'">
       <thead>
         <th align="center">
-          <br />
+          Escala: Aberto
         </th>
         <th align="center">
-          <br />
+          {{dateExtended}}
         </th>
         <th align="center" class="grid week" v-for="day in weekDays" :key="day.id" :class="{'weekend weekend-background':day.weekend}">{{day.name}}</th>
       </thead>
@@ -69,17 +68,23 @@
         </tr>
       </tbody>
     </table>
+    <horaExtra  :users="users" v-if="current=='horaExtra'"></horaExtra>
+    <Beneficios  ref="ben" :users="users" :colors="colors" :hours="hours" v-if="current=='beneficios'"></Beneficios>
   </div>
+  
 </template>
 
 <script>
 import Vue from "vue";
 import Dropdown from "./Dropdown";
 import Beneficios from './Beneficios';
+import horaExtra from './horaExtra'
+
 export default {
   components: {
     Dropdown,
-    Beneficios
+    Beneficios,
+    horaExtra
   },
   props: {
     painting: {},
@@ -102,6 +107,10 @@ export default {
     };
   },
   computed: {
+    dateExtended(){
+      const order = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+      return order[this.date.month - 1] + " - " + this.date.year
+    },
     days() {
       return this.users[0].status.map((value, index) => index + 1);
     },
@@ -144,6 +153,10 @@ export default {
     }
   },
   methods: {
+    renderBeneficio(){
+      console.log(this.$refs)
+      this.$refs.ben.changeKey()
+    },
     addToFilter(item){
       const index = this.filterObj.reduce((result, obj, index) => {
         if(obj.index == item.index){
@@ -351,6 +364,7 @@ export default {
       this.dropdownObjects
     }
   },
+
   mounted() {
     this.return.reset = this.resetValues;
     this.return.remake = this.remakeTable;
@@ -359,7 +373,6 @@ export default {
     },1000)
   }
 };
-
 
 Vue.directive('money',{
     inserted(el){
@@ -373,7 +386,7 @@ Vue.directive('date',{
   inserted(el){
     let value = el.innerHTML
       value = value.replace(/(\d{2})(\d{2})(\d{4})/g,'$1/$2/$3')
-      el.innerHTML = value
+      el.innerHTML = value.substring(0,10)
   }
 })
 

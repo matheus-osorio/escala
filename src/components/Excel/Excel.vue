@@ -3,7 +3,7 @@
      <Options @undoFilter="undoFilter" @resetValue="resetValue" @toggleFilter="toggleFilter" @saveData="$emit('saveData')" @changeColor="changeColor" class="Options-menu" id="Options"></Options>
      <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
      <Extras :current="current" :text="textData" id="extras" @changeCurrent="changeCurrent"></Extras>
-     <Table :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" :hours="hours" :complete="complete" id="data" @toggleFilter="$emit('toggleFilter',filter)"></Table>
+     <Table ref="table" :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" :hours="hours" :complete="complete" id="data" @toggleFilter="$emit('toggleFilter',filter)"></Table>
   </div>
 </template>
 
@@ -16,6 +16,7 @@ import Table from './Table'
 import Options from './Options'
 
 import Extras from './Extras'
+
 
 export default {
  components:{
@@ -46,6 +47,7 @@ export default {
      },
      changeCurrent(newTable){
          this.current = newTable
+         this.$refs.table.renderBeneficio()
      },
      undoFilter(){
          this.filter = false
