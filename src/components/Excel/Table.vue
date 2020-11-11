@@ -69,6 +69,10 @@
       </tbody>
     </table>
     <horaExtra  :users="users" v-if="current=='horaExtra'"></horaExtra>
+    <hora50  :users="users" v-if="current=='HE50'"></hora50>
+    <hora100  :users="users" v-if="current=='HE100'"></hora100>
+    <hh  :users="users" v-if="current=='HH'"></hh>
+
     <Beneficios  ref="ben" :users="users" :colors="colors" :hours="hours" v-if="current=='beneficios'"></Beneficios>
   </div>
   
@@ -79,12 +83,17 @@ import Vue from "vue";
 import Dropdown from "./Dropdown";
 import Beneficios from './Beneficios';
 import horaExtra from './horaExtra'
-
+import hora50 from './he50'
+import hora100 from './he100'
+import hh from './hh'
 export default {
   components: {
     Dropdown,
     Beneficios,
-    horaExtra
+    horaExtra,
+    hora50,
+    hora100,
+    hh
   },
   props: {
     painting: {},

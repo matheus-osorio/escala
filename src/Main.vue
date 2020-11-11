@@ -183,30 +183,63 @@ export default {
       document.querySelector('body').classList.add('progress-pointer')
       let bodyStatus = ''
       let bodyHE = ''
+      let bodyHE50 = ''
+      let bodyHE100 = ''
+      let bodyHH = ''
       this.users.forEach(user => {
         bodyStatus += this.createStringFromUsers(user,'status') + '\n'
         bodyHE += this.createStringFromUsers(user,'extra') + '\n'
+        bodyHE50 += this.createStringFromUsers(user,'extra50') + '\n'
+        bodyHE100 += this.createStringFromUsers(user,'extra100') + '\n'
+        bodyHH += this.createStringFromUsers(user,'extrahora') + '\n'
+       
       })
       bodyStatus = bodyStatus.slice(0,-1)
       bodyHE = bodyHE.slice(0,-1)
-      const paramStatus = {
+      bodyHE50 = bodyHE50.slice(0,-1)
+      bodyHE100 = bodyHE100.slice(0,-1)
+      bodyHH = bodyHH.slice(0,-1)
+
+
+      // const paramStatus = {
+      //   method:'POST',
+      //   cache:'no-store',
+      //   body: bodyStatus
+      // }
+
+      // const paramHE = {
+      //   method:'POST',
+      //   cache:'no-store',
+      //   body: bodyHE
+      // }
+      
+      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=status`,{
         method:'POST',
         cache:'no-store',
         body: bodyStatus
-      }
-
-      const paramHE = {
+      })
+      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=he`,{
         method:'POST',
         cache:'no-store',
         body: bodyHE
-      }
-      console.log(bodyHE)
-      fetch(`https://webrun.perbras.com.br/medicao/inserirStatusAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,paramStatus)
-      .then(() => {
-        fetch(`https://webrun.perbras.com.br/medicao/inserirHEAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}`,paramHE)
+      })
+      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=he50`,{
+        method:'POST',
+        cache:'no-store',
+        body: bodyHE50
+      })
+      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=he100`,{
+        method:'POST',
+        cache:'no-store',
+        body: bodyHE100
+      })
+      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=hh`,{
+        method:'POST',
+        cache:'no-store',
+        body: bodyHH
+      })
       .then(() => {
         document.querySelector('body').classList.remove('progress-pointer')
-      })
       })
       
     },

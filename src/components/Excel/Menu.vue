@@ -6,7 +6,10 @@
         <a href="#" @click="changeCurrent('status')"  :class="{'selected': nome == 'STATUS'}"   >Status</a>
         <a href="#" @click="changeCurrent('usuarios')" :class="{'selected': nome == 'FUNCIONÁRIOS'}">Funcionários</a>
         <a href="#" @click="changeCurrent('beneficios')" :class="{'selected': nome == 'BENEFÍCIOS'}">Benefícios</a>
-        <a href="#" @click="changeCurrent('horaExtra')" :class="{'selected': nome == 'HORA EXTRA'}">Hora Extra</a>
+        <a href="#" @click="changeCurrent('horaExtra')" :class="{'selected': nome == 'EXTRA FATURADA'}">Hora Extra Faturada</a>
+        <a href="#" @click="changeCurrent('HE50')" :class="{'selected': nome == 'EXTRA (50%)'}">Hora Extra 50%</a>
+        <a href="#" @click="changeCurrent('HE100')" :class="{'selected': nome == 'EXTRA (100%)'}">Hora Extra 100%</a>
+        <a href="#" @click="changeCurrent('HH')" :class="{'selected': nome == 'EXTRA HORA'}">Hora Homem</a>
         </div>
     </div>
     </div>
@@ -21,7 +24,10 @@ export default {
                 status: 'STATUS',
                 usuarios: 'FUNCIONÁRIOS',
                 beneficios: 'BENEFÍCIOS',
-                horaExtra: 'HORA EXTRA'
+                horaExtra: 'EXTRA FATURADA',
+                HE50: 'EXTRA (50%)',
+                HE100: 'EXTRA (100%)',
+                HH: 'EXTRA HORA'
             }
         }
     },
