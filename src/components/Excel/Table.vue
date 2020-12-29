@@ -25,8 +25,8 @@
           <td class="grid">{{line.HT}}</td>
           <td v-money class="grid">{{line.salario.maior}}</td>
           <td class="grid"><i :class="{'fas fa-times': !line.ferias,'fas fa-check':line.ferias}"></i></td>
-          <td class="grid">{{line.job}}</td>
           <td class="grid">{{line.user}}</td>
+          <td class="grid">{{line.job}}</td>
         </tr>
       </tbody>
     </table>
@@ -42,12 +42,12 @@
         <th align="center" class="grid week" v-for="day in weekDays" :key="day.id" :class="{'weekend weekend-background':day.weekend}">{{day.name}}</th>
       </thead>
       <thead>
-        <th align="center" class="grid sticky bg-light">Usuário <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
-        <th align="center" class="grid sticky bg-light">Trabalho <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
+        <th align="center" class="grid sticky bg-light">Usuário<i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
+        <th align="center" class="grid sticky bg-light">Função<i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
         <th align="center" class="grid status sticky bg-light" v-for="(day,index) in days" :key="day.id" :class="{'weekend weekend-background':weekDays[index].weekend}">{{day}}</th>
       </thead>
       <tbody>
-        <tr draggable="false" v-for="(line,lindex) in usersFiltered" :key="line.id">
+        <tr draggable="false" v-for="(line,lindex) in usersFiltered" :key="line.id" class="black-on-hover">
           <td draggable="false" align="center" class="grid info text-nowrap">{{line.user}}</td>
           <td draggable="false" align="center" class="grid info text-nowrap">{{line.job}}</td>
           <td
@@ -62,6 +62,7 @@
             @mouseup="paintRange"
             @mousedown="(event) => {dragRange(event,true)}"
             @mouseenter="selectedArea"
+            
             :key="value.id"
             :class="{weekend:weekDays[cindex].weekend}"
           >{{value}}</td>
@@ -173,7 +174,8 @@ export default {
         }
         return result
       },-1)
-
+      console.log('index: ', index)
+      console.log('filterObj: ', this.filterObj)
       if(index >= 0){
         this.filterObj[index] = {...item}
       }
@@ -334,8 +336,8 @@ export default {
       };
     },
     createDropdownObjects(){
-      const header = ['#','Mat','Dt Adm','CPF','Residencia','VT','Dt','Venc','Setor','Regime','Salário','NOT.','PER.','H.T.','Maior','FÉRIAS','Função','Nome']
-      const columnName = [['number'],['Mat'],['adm'],['CPF'],['residencia'],['VT'],['nasc'],['ASO'],['setor'],['regime'],['salario','base'],['NOT'],['PER'],['HT'],['salario','maior'],['ferias'],['job'],['user']]
+      const header = ['#','Mat','Dt Adm','CPF','Residencia','VT','Dt','Venc','Setor','Regime','Salário','NOT.','PER.','H.T.','Maior','FÉRIAS','Nome','Função']
+      const columnName = [['number'],['Mat'],['adm'],['CPF'],['residencia'],['VT'],['nasc'],['ASO'],['setor'],['regime'],['salario','base'],['NOT'],['PER'],['HT'],['salario','maior'],['ferias'],['user'],['job']]
       const directive = ['none','none','date','cpf','none','none','date','date','none','none','money','none','none','none','money','none','none','none']
       const objArray = []
       for(const index in header){
@@ -377,9 +379,7 @@ export default {
   mounted() {
     this.return.reset = this.resetValues;
     this.return.remake = this.remakeTable;
-    setTimeout(() => {
-      this.dropdownObjects = this.createDropdownObjects()
-    },1000)
+    this.dropdownObjects = this.createDropdownObjects()
   }
 };
 
@@ -411,6 +411,16 @@ Vue.directive('cpf',{
 
 <style scoped>
 
+.dropdown-color-menu{
+  position: fixed;
+  z-index: 10000;
+  top: 0;
+  width: 40%;
+  margin-left: 25%;
+  height: 40px;
+  background-color: red;
+}
+
 .sticky{
   position: sticky;
   top: 0;
@@ -430,6 +440,11 @@ Vue.directive('cpf',{
   filter: grayscale(0%) brightness(100%) !important;
   background-color:lightsalmon !important;
   color:black !important;
+}
+
+.black-on-hover:hover{
+  box-shadow: 0 0 20px black;
+  
 }
 
 .week {
@@ -485,6 +500,8 @@ div {
 .status {
   width: 40px;
 }
+
+
 
 .info {
   width: 400px;

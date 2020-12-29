@@ -21,6 +21,13 @@
         <ul class="navbar-nav ml-auto">
           <li
             class="nav-item pr-2 pl-2 item-custom"
+            :class="{current: active=='Escala'}"
+            @click="active='Escala'"
+          >
+            <a class="nav-link text-light" href="#">Escala de Trabalho</a>
+          </li>
+          <li
+            class="nav-item pr-2 pl-2 item-custom"
             :class="{current: active=='Status'}"
             @click="active='Status'"
           >
@@ -41,11 +48,13 @@
           >
             <a class="nav-link text-light" href="#">Visualização</a>
           </li>
+
         </ul>
       </div>
     </nav>
 
-    <Excel
+    <div class="corpo" v-if="!loading">
+      <Excel
       :func="func"
       :filterObj="filterObj"
       :date="date"
@@ -60,6 +69,8 @@
     />
     <Visualizacao :users="users" :colors="colors" v-if="active == 'Visualizacao'" />
     <Status :users="users" v-if="active == 'Status'" :colors="colors"/>
+    <Escala :users="users" v-if="active == 'Escala'" :colors="colors" :date="date"/>
+    </div>
   </div>
 </template>
 
@@ -67,6 +78,7 @@
 import Excel from "./components/Excel/Excel";
 import Visualizacao from "./components/Visualizacao/Visualizacao";
 import Status from "./components/Status/Status";
+import Escala from './components/Escala/escala'
 
 export default {
   name: "App",
@@ -100,54 +112,70 @@ export default {
       colors: [],
       hours:{},
       date: {},
-      complete: true
+      complete: true,
+      loading:true,
+      loadArr:[false,false,false]
     };
   },
   components: {
     Excel,
     Visualizacao,
-    Status
+    Status,
+    Escala
   },
   mounted() {
-    // const estab = this.$route.params.estab
+    //const estab = this.$route.params.estab
     this.date.day = 1
     this.date.month = parseInt(this.$route.params.mes)
     this.date.year = parseInt(this.$route.params.ano)
     this.dateText = this.createDateText()
-    //const src = 'http://webrun.perbras.com.br:8080/dev/'
-    // const src = 'https://webrun.perbras.com.br/medicao/'
-    const src = 'http://localhost:3000/'
+    
+    const url = (id) => this.$store.getters.link(id,this.$route.params)
+
     window.onbeforeunload = this.beforeUnload;
 
-    fetch(src + 'users')
-    // fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&estab=${estab}`)
+    fetch(url('escala'))
+    //fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&estab=${estab}`)
     .then(json => {
       return json.json()
     })
     .then(obj => {
       obj.forEach((user) => {
         this.users.push(user)
+        this.loadArr[0] = true
+        if(this.loadArr.filter(v => !v).length == 0){
+          this.loading = false
+        }
+
       })
     })
 
-    fetch(src + 'colors')
-    // fetch(src + `colorAPI.rule?sys=MDC&estab=${estab}`)
+    fetch(url('cor'))
+    //fetch(src + `colorAPI.rule?sys=MDC&estab=${estab}`)
     .then(json => {
       return json.json()
     })
     .then(obj => {
       obj.forEach((color) => {
         this.colors.push(color)
+        this.loadArr[1] = true
+        if(this.loadArr.filter(v => !v).length == 0){
+          this.loading = false
+        }
       })
     })
 
-    fetch(src + `hours`)
-    // fetch(src + `horaAPI.rule?sys=MDC&estab=${estab}`)
+    fetch(url('hora'))
+    //fetch(src + `horaAPI.rule?sys=MDC&estab=${estab}`)
     .then(json => {
       return json.json()
     })
     .then(obj => {
       this.hours = obj
+      this.loadArr[2] = true
+        if(this.loadArr.filter(v => !v).length == 0){
+          this.loading = false
+        }
     })
 
     
@@ -181,67 +209,23 @@ export default {
 
      saveData(){
       document.querySelector('body').classList.add('progress-pointer')
-      let bodyStatus = ''
-      let bodyHE = ''
-      let bodyHE50 = ''
-      let bodyHE100 = ''
-      let bodyHH = ''
+      let body = ''
       this.users.forEach(user => {
-        bodyStatus += this.createStringFromUsers(user,'status') + '\n'
-        bodyHE += this.createStringFromUsers(user,'extra') + '\n'
-        bodyHE50 += this.createStringFromUsers(user,'extra50') + '\n'
-        bodyHE100 += this.createStringFromUsers(user,'extra100') + '\n'
-        bodyHH += this.createStringFromUsers(user,'extrahora') + '\n'
-       
+        body += this.createStringFromUsers(user,'status') + '\n'      
       })
-      bodyStatus = bodyStatus.slice(0,-1)
-      bodyHE = bodyHE.slice(0,-1)
-      bodyHE50 = bodyHE50.slice(0,-1)
-      bodyHE100 = bodyHE100.slice(0,-1)
-      bodyHH = bodyHH.slice(0,-1)
+      body = body.slice(0,-1)
 
+      const params = this.$route.params
+      params.mode = 'STATUS'
 
-      // const paramStatus = {
-      //   method:'POST',
-      //   cache:'no-store',
-      //   body: bodyStatus
-      // }
-
-      // const paramHE = {
-      //   method:'POST',
-      //   cache:'no-store',
-      //   body: bodyHE
-      // }
-      
-      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=status`,{
+      fetch(this.$store.getters.link('inserir',params),{
         method:'POST',
         cache:'no-store',
-        body: bodyStatus
-      })
-      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=he`,{
-        method:'POST',
-        cache:'no-store',
-        body: bodyHE
-      })
-      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=he50`,{
-        method:'POST',
-        cache:'no-store',
-        body: bodyHE50
-      })
-      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=he100`,{
-        method:'POST',
-        cache:'no-store',
-        body: bodyHE100
-      })
-      fetch(`https://webrun.perbras.com.br/medicao/inserirEscalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&modo=hh`,{
-        method:'POST',
-        cache:'no-store',
-        body: bodyHH
+        body: body
       })
       .then(() => {
         document.querySelector('body').classList.remove('progress-pointer')
       })
-      
     },
 
     resetFilter(resetParameters = false) {
@@ -257,8 +241,10 @@ export default {
         return;
       }
       this.resetFilter();
+      console.log('filterObj: ',this.filterObj)
       for (const filter of this.filterObj) {
         const direction = this.columnName[filter.index];
+        console.log('direction: ', direction)
         const returned = this.users.filter(user => {
           if (filter.value === undefined) {
             return false;
@@ -268,7 +254,6 @@ export default {
           }, user);
           return value != filter.value;
         });
-        console.log(returned);
         returned.forEach(obj => {
           obj.show = false;
         });
@@ -292,6 +277,11 @@ export default {
   --painter-height: 200px;
   --painter-width: 500px;
   --vertical-space: 10px;
+}
+
+.corpo{
+  width: 100%;
+  height: 100%;
 }
 
 .data-estilo{
@@ -335,6 +325,8 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   height: 100vh;
+  width: 100vw;
+  overflow: hidden;
   grid-template-rows: var(--nav-height) 1fr;
   grid-template-areas: "nav" "table";
 }

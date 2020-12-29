@@ -102,11 +102,14 @@ export default {
 .big-table{
     margin-top:12px;
     overflow: scroll;
+    width: 100vw;
+    height: 100vh;
 }
 
 .dark{
     background-color:rgba(206, 206, 206, 0.514);
 }
+
 .custom-background{
     background-color:#cccccc;
 }

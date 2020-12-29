@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <button v-if="!icon" :class="{'active':active}" :style="colorStyle()" class="btn btn-custom">{{name}}</button>
+    <button  @click="$emit('clickEvent')" @mouseenter="$emit('mouseEnterEvent')" v-if="!icon" :class="{'active':active}" :style="colorStyle()" class="btn btn-custom">{{name}}</button>
     <button v-if="icon" :class="{'active':active}" :style="colorStyle()" class="btn btn-custom"> <i :class="name"></i></button>
   </fragment>
 </template>

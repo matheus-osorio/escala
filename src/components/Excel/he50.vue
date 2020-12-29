@@ -25,6 +25,7 @@
               type="text"
               class="cell-input light-grey"
               v-model="users[x].extra50[y]"
+              @change="inserirHE(linha.Mat,users[x].extra50[y],y+1)"
             />
           </td>
         </tr>
@@ -36,6 +37,18 @@
 <script>
 export default {
   props: ["users"],
+  methods:{
+    inserirHE(mat,valor,dia){
+      const body = mat + ';' + valor
+      const params = this.$route.params
+      params.dia = dia
+      fetch(this.$store.getters.insert(params,'H050'),{
+        method:'POST',
+        cache:'no-store',
+        body: body
+      })
+    }
+  }
 };
 </script>
 

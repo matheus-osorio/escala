@@ -10,7 +10,9 @@
         <tr v-for="(linha,x) in users" :key="linha.id">
             <td class="cell text-nowrap">{{linha.user}}</td>
             <td class="cell text-nowrap">{{linha.job}}</td>
-            <td class="cell cell-relative" v-for="(number,y) in linha.extra" :key="number.id"><input type="text" class="cell-input light-grey" v-model="users[x].extra[y]"></td>
+            <td class="cell cell-relative" v-for="(number,y) in linha.extra" :key="number.id">
+                <input type="text" class="cell-input light-grey" v-model="users[x].extra[y]" @change="inserirHE(linha.Mat,users[x].extra[y],y+1)">
+            </td>
         </tr>
       </tbody>
     </table>
@@ -19,7 +21,19 @@
 
 <script>
 export default {
-    props:['users']
+    props:['users'],
+    methods:{
+        inserirHE(mat,valor,dia){
+            const body = mat + ';' + valor
+            const params = this.$route.params
+            params.dia = dia
+            fetch(this.$store.getters.insert(params,'HEF'),{
+                method:'POST',
+                cache:'no-store',
+                body: body
+            })
+        }
+  }
    
 }
 </script>

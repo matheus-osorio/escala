@@ -1,5 +1,6 @@
 <template>
   <div id="Excel">
+      <dropdownColor :colors="colors"  @changeColor="changeColor"/>
      <Options @undoFilter="undoFilter" @resetValue="resetValue" @toggleFilter="toggleFilter" @saveData="$emit('saveData')" @changeColor="changeColor" class="Options-menu" id="Options"></Options>
      <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
      <Extras :current="current" :text="textData" id="extras" @changeCurrent="changeCurrent"></Extras>
@@ -17,13 +18,15 @@ import Options from './Options'
 
 import Extras from './Extras'
 
+import dropdownColor from './dropdownColor'
 
 export default {
  components:{
      Painter,
      Table,
      Options,
-     Extras
+     Extras,
+     dropdownColor
  },
  props:['users','colors','date','filterObj','func','hours','complete'],
  data(){
@@ -72,11 +75,12 @@ export default {
     display:grid;
     grid-template-columns: var(--user-width) var(--painter-width) 1fr;
     grid-template-rows: var(--space) var(--painter-height) 1fr;
+    overflow-y: scroll;
+    height: 100vh;
     grid-template-areas: 
     "space space space"
     "Options painter extras"
     "data data data";
-    overflow-y: scroll;
 }
 
 #painter{
