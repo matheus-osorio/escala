@@ -1,5 +1,6 @@
 <template>
   <div id="main">
+    <!-- a nav possui é o ativador da mudança de página -->
     <nav id="nav" class="navbar navbar-expand-lg navbar-light nav-custom">
       <a class="navbar-brand" href="#">
         <img class="Logo" src="./img/logo.svg" alt />
@@ -69,7 +70,7 @@
     />
     <Visualizacao :users="users" :colors="colors" v-if="active == 'Visualizacao'" />
     <Status :users="users" v-if="active == 'Status'" :colors="colors"/>
-    <Escala :users="users" v-if="active == 'Escala'" :colors="colors" :date="date"/>
+    <Escala :groups="groups" :users="users" v-if="active == 'Escala'" :colors="colors" :date="date"/>
     </div>
   </div>
 </template>
@@ -88,6 +89,7 @@ export default {
       active: "Tabela",
       filterObj: [],
       func: {},
+      groups: {},
       columnName: [
         ["number"],
         ["Mat"],
@@ -114,7 +116,7 @@ export default {
       date: {},
       complete: true,
       loading:true,
-      loadArr:[false,false,false]
+      loadArr:[false,false,false,false,false]
     };
   },
   components: {
@@ -124,18 +126,62 @@ export default {
     Escala
   },
   mounted() {
-    //const estab = this.$route.params.estab
+    //pega os parametros e insere numa variável interna
     this.date.day = 1
     this.date.month = parseInt(this.$route.params.mes)
     this.date.year = parseInt(this.$route.params.ano)
     this.dateText = this.createDateText()
     
-    const url = (id) => this.$store.getters.link(id,this.$route.params)
+    const url = (id) => this.$store.getters.link(id,this.$route.params) //cria função para agilizar a busca pelas APIs
 
-    window.onbeforeunload = this.beforeUnload;
+    window.onbeforeunload = this.beforeUnload; //define função antes da página ser fechada
 
-    fetch(url('escala'))
-    //fetch(src + `escalaAPI.rule?sys=MDC&mes=${this.date.month}&ano=${this.date.year}&estab=${estab}`)
+    const cookie = this.getCookies()
+
+    //verifica a existencia do cookie
+    if(cookie.token != undefined){
+      fetch(url('token').replace('{{mode}}','token'),{
+        method:'POST',
+        body: cookie.token
+      })
+      .then(response => response.json())
+      .then(obj => {
+        //verifica a válidade do cookie
+        if(!obj.auth){
+            window.location.replace(url('login'))
+        }
+        
+        else{
+          this.loadArr[3] = true
+          if(this.loadArr.filter(v => !v).length == 0){
+            this.loading = false
+          }
+        }
+      })
+    }
+    else{
+      window.location.replace(url('login')) //retorna para a página de login
+    }
+
+    fetch(url('grupos')) //busca a API de grupos
+    .then(json => json.json())
+    .then(obj => {
+      const keys = Object.keys(obj)
+      const newObj = {}
+      keys.forEach(key => {
+        obj[key].grupo.forEach(grupo => {
+          newObj[grupo] = key
+        })
+      })
+
+      this.groups = newObj
+      this.loadArr[4] = true
+      if(this.loadArr.filter(v => !v).length == 0){
+        this.loading = false
+      }
+    })
+
+    fetch(url('escala')) //busca a API dos funcionários
     .then(json => {
       return json.json()
     })
@@ -150,8 +196,7 @@ export default {
       })
     })
 
-    fetch(url('cor'))
-    //fetch(src + `colorAPI.rule?sys=MDC&estab=${estab}`)
+    fetch(url('cor')) //busca a API dos status
     .then(json => {
       return json.json()
     })
@@ -165,8 +210,7 @@ export default {
       })
     })
 
-    fetch(url('hora'))
-    //fetch(src + `horaAPI.rule?sys=MDC&estab=${estab}`)
+    fetch(url('hora')) //busca a API de data
     .then(json => {
       return json.json()
     })
@@ -181,11 +225,40 @@ export default {
     
   },
   methods: {
-    createDateText(){
+    createDateText(){ //transforma data em um modelo textual, como Fevereiro - 2021
       const order = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
       return order[this.date.month - 1] + " - " + this.date.year
     },
-    beforeUnload(e) {
+
+    setCookie(name,value,days){ //cria novo cookie
+      let date = new Date()
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
+      const cookie = `${name} = ${value};expires = ${date.toUTCString};path = /`
+      document.cookie = cookie
+    },
+
+    deleteCookie(name){ //deleta cookie
+      let date = new Date()
+      date.setTime((2 * 24 * 60 * 60 * 1000))
+      const cookie = `${name}=;expires = ${date.toUTCString};path = /`
+      document.cookie = cookie
+    },  
+
+    getCookies(){ //busca todos os cookies
+      let cookies = document.cookie
+
+      cookies = cookies.split('; ')
+      
+      return cookies.reduce((obj,line) => {
+          const values = line.match(/[^=]+/g)
+          if(!(values instanceof Array)){
+            return obj
+          }
+          obj[values[0]] = values[1]
+          return obj
+      },{})
+    },
+    beforeUnload(e) { //previne o usuário de fechar a página, ele pode não ter salvado
       e = e || window.event;
 
       // For IE and Firefox prior to version 4
@@ -197,7 +270,7 @@ export default {
       return "Tenha certeza que salvou tudo antes de sair";
     },
 
-    createStringFromUsers(user,param){
+    createStringFromUsers(user,param){ //cria uma grande string no formato csv com o matricula seguida do status do funcionário
       let string = user.Mat
 
       user[param].forEach(status => {
@@ -207,8 +280,9 @@ export default {
       return string
     },
 
-     saveData(){
+     saveData(){ //salva o status
       document.querySelector('body').classList.add('progress-pointer')
+      this.deleteCookie('escala')
       let body = ''
       this.users.forEach(user => {
         body += this.createStringFromUsers(user,'status') + '\n'      
@@ -228,7 +302,7 @@ export default {
       })
     },
 
-    resetFilter(resetParameters = false) {
+    resetFilter(resetParameters = false) { //reseta o estado dos filtros
       for (const user of this.users) {
         user.show = true;
       }
@@ -236,15 +310,14 @@ export default {
         this.filterObj = [];
       }
     },
-    filterList(filterMode) {
+
+    filterList(filterMode) { //essa função está depreciada e provavelmente não tem utilização nenhuma
       if (!filterMode) {
         return;
       }
       this.resetFilter();
-      console.log('filterObj: ',this.filterObj)
       for (const filter of this.filterObj) {
         const direction = this.columnName[filter.index];
-        console.log('direction: ', direction)
         const returned = this.users.filter(user => {
           if (filter.value === undefined) {
             return false;
@@ -338,4 +411,12 @@ export default {
 #table {
   grid-area: table;
 }
+
+
+@media print{
+    #main{
+        height: 100%;
+    }
+}
+
 </style>

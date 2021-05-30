@@ -3,7 +3,6 @@
       <td class="mb-2 ml-2" v-for="(btn,index) in buttons" :key="btn.id" @click="buttonClick(btn,index)">
             <Button icon="true" :color="btn.color" :name="btn.name" :active="btn.active"></Button>
       </td>
-       
   </div>
 </template>
 
@@ -45,12 +44,13 @@ export default {
                 },
                 {
                     color: '#de7237',
-                    name: 'fas fa-filter',
+                    name: 'fas fa-print',
                     value: undefined,
-                    func: 'toggleFilter',
+                    func: 'printCurrentPage',
                     active: false,
                     hold:true
-                }
+                },
+                
             ]
         }
     },

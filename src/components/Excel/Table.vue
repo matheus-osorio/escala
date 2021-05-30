@@ -1,11 +1,65 @@
 <template>
   <div class="table-custom">
-    <table class="small-text fullsize" v-if="current =='usuarios'">
+    <table class="small-text fullsize" v-if="current =='usuarios'" draggable="false">
       <thead class="color-orange">
-        <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" v-for="data in dropdownObjects" :key="data.id">
-          {{data.text}}
-          <i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,data.dropdown)}"></i>
-        </th>
+        <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > # 
+          <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Mat 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Dt Adm 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > CPF 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false"  :class="{'dropdown-area': dropdownActivator.func.residencia}"> Residencia 
+            <i class="fas fa-chevron-down" @click="dropdownActivator.func.residencia = !dropdownActivator.func.residencia"></i>
+            <ndd column='residencia' :changed="dropdownChanged" :filters='dropdownBoolean.residencia' :items="dropdownItems.residencia" @filterActivation='(column) => activateFilter(column)'/>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > VT 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Dt 
+              <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Venc 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false"  :class="{'dropdown-area': dropdownActivator.func.setor}"> Setor 
+            <i class="fas fa-chevron-down" @click="dropdownActivator.func.setor = !dropdownActivator.func.setor"></i>
+            <ndd column='setor' :changed="dropdownChanged" :filters='dropdownBoolean.setor' :items="dropdownItems.setor" @filterActivation='(column) => activateFilter(column)'/>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Regime 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Salário 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > NOT. 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > PER. 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > H.T. 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > Maior 
+              <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" > FÉRIAS 
+            <i class="fas fa-chevron-down"></i>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" :class="{'dropdown-area': dropdownActivator.func.nome}"> Nome 
+            <i class="fas fa-chevron-down"  @click="dropdownActivator.func.nome = !dropdownActivator.func.nome"></i>
+            <ndd column='user' :changed="dropdownChanged" :filters='dropdownBoolean.user' :items="dropdownItems.user" @filterActivation='(column) => activateFilter(column)'/>
+          </th>
+          <th align="center" class="grid text-nowrap fixed-23 sticky color-orange" draggable="false" :class="{'dropdown-area': dropdownActivator.func.funcao}"> Função 
+            <i class="fas fa-chevron-down" @click="dropdownActivator.func.funcao = !dropdownActivator.func.funcao"></i>
+            <ndd column='job' :changed="dropdownChanged" :filters='dropdownBoolean.job' :items="dropdownItems.job" @filterActivation='(column) => activateFilter(column)'/>
+          </th>
       </thead>
       <tbody>
         <tr v-for="(line,index) in usersFiltered" :class="{'color-grey': index%2 == 1}" :key="line.id" class="fixed-23">
@@ -30,21 +84,28 @@
         </tr>
       </tbody>
     </table>
-    <Dropdown :index="index" :filterObj="filterObj" v-for="(column,index) of dropdownObjects" :key="column.id" :params="column.dropdown" @filterClick="addToFilter"></Dropdown>
     <table draggable="false" v-if="current =='status'">
       <thead>
-        <th align="center">
+        <th align="center" draggable="false">
           Escala: Aberto
         </th>
-        <th align="center">
+        <th align="center" draggable="false">
           {{dateExtended}}
         </th>
-        <th align="center" class="grid week" v-for="day in weekDays" :key="day.id" :class="{'weekend weekend-background':day.weekend}">{{day.name}}</th>
+        <th draggable="false" align="center" class="grid week" v-for="day in weekDays" :key="day.id" :class="{'weekend weekend-background':day.weekend}">{{day.name}}</th>
       </thead>
       <thead>
+        <!--
         <th align="center" class="grid sticky bg-light">Usuário<i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[16].dropdown)}"></i></th>
-        <th align="center" class="grid sticky bg-light">Função<i class="fas fa-chevron-down" @click="(event) => {toggleDropdown(event,dropdownObjects[17].dropdown)}"></i></th>
-        <th align="center" class="grid status sticky bg-light" v-for="(day,index) in days" :key="day.id" :class="{'weekend weekend-background':weekDays[index].weekend}">{{day}}</th>
+        -->
+        <th align="center" draggable="false" class="grid sticky bg-light" :class="{'dropdown-area':dropdownActivator.status.usuario}">Usuário
+          <i class="fas fa-chevron-down" @click="dropdownActivator.status.usuario = !dropdownActivator.status.usuario"></i>
+          <ndd column='user' :filters='dropdownBoolean.user' :items="dropdownItems.user" @filterActivation='(column) => activateFilter(column)'/></th>
+        <th draggable="false" align="center" class="grid sticky bg-light" :class="{'dropdown-area': dropdownActivator.status.funcao}">Função
+          <i class="fas fa-chevron-down" @click="dropdownActivator.status.funcao = !dropdownActivator.status.funcao"></i>
+          <ndd column='job' :filters='dropdownBoolean.job' :items="dropdownItems.job" @filterActivation='(column) => activateFilter(column)'/>
+        </th>
+        <th draggable="false" align="center" class="grid status sticky bg-light" v-for="(day,index) in days" :key="day.id" :class="{'weekend weekend-background':weekDays[index].weekend}">{{day}}</th>
       </thead>
       <tbody>
         <tr draggable="false" v-for="(line,lindex) in usersFiltered" :key="line.id" class="black-on-hover">
@@ -59,6 +120,9 @@
             :line="lindex"
             :id="'index' + lindex + '-' + cindex"
             v-for="(value,cindex) in line.status"
+            @dragstart="(e) => { e.preventDefault()}"
+            @drag="(e) => { e.preventDefault()}"
+            @dragover="(e) => { e.preventDefault()}"
             @mouseup="paintRange"
             @mousedown="(event) => {dragRange(event,true)}"
             @mouseenter="selectedArea"
@@ -74,27 +138,27 @@
     <hora100  :users="users" v-if="current=='HE100'"></hora100>
     <hh  :users="users" v-if="current=='HH'"></hh>
 
-    <Beneficios  ref="ben" :users="users" :colors="colors" :hours="hours" v-if="current=='beneficios'"></Beneficios>
+    <Beneficios  ref="ben" :users="users" :colors="colors" :hours="hours" :date="date" v-if="current=='beneficios'"></Beneficios>
   </div>
   
 </template>
 
 <script>
 import Vue from "vue";
-import Dropdown from "./Dropdown";
 import Beneficios from './Beneficios';
 import horaExtra from './horaExtra'
 import hora50 from './he50'
 import hora100 from './he100'
 import hh from './hh'
+import ndd from './newDropdown'
 export default {
   components: {
-    Dropdown,
     Beneficios,
     horaExtra,
     hora50,
     hora100,
-    hh
+    hh,
+    ndd
   },
   props: {
     painting: {},
@@ -113,7 +177,22 @@ export default {
     return {
       dragCoordinates: {},
       history: [],
-      dropdownObjects: {}
+      dropdownObjects: {},
+      dropdownActivator:{
+        status:{
+          usuario:false,
+          funcao:false
+        },
+        func:{
+          nome:false,
+          funcao:false,
+          residencia:false,
+          setor:false
+        }
+      },
+      dropdownItems: {},
+      dropdownBoolean: {},
+      dropdownChanged: {}
     };
   },
   computed: {
@@ -163,9 +242,95 @@ export default {
     }
   },
   methods: {
+    createExcelFile(){
+      this.$refs.ben.createExcelFile()
+    },
+    setCookie(name,value,days){
+      let date = new Date()
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000))
+      const cookie = `${name} = ${value};expires = ${date.toUTCString()};path = /`
+      console.log('cookie: ',cookie)
+      document.cookie = cookie
+    },
+    dropdownItemsCreator(){
+      const columns = ['user','job','residencia','setor']
+      const users = this.users
+      const obj = {}
+
+      columns.forEach(c => {
+        this.getSetOfItems(users,obj,c)
+      })
+
+      return obj
+    },
+    dropdownChangedCreator(){
+      const keys = Object.keys(this.dropdownItems)
+      const obj = {}
+      for(let key of keys){
+        obj[key] = false
+      }
+
+      return obj
+    },
+    dropdownBooleanCreator(){
+      const keys = Object.keys(this.dropdownItems)
+      const obj = {}
+      for(let key of keys){
+        const arr = this.dropdownItems[key]
+        obj[key] = {}
+        const state = this.users.reduce((obj,user)=> {
+          if(obj[key] === undefined){
+            obj[key] = {}
+          }
+          if(obj[key][user[key]] === undefined){
+            obj[key][user[key]] = false
+          }
+          obj[key][user[key]] = obj[key][user[key]] || user.show
+          return obj
+        },{})
+
+        arr.forEach(i => {
+          obj[key][i] = state[key][i]
+        })
+      }
+      return obj
+    },
+    resetFilter(){
+      console.log('Entrou nessa função')
+      this.dropdownBoolean = this.dropdownBooleanCreator()
+    },
+    activateFilter(){
+      let ddb = this.dropdownBoolean
+      let keys = Object.keys(ddb)
+      this.users.forEach(u => u.show = true)
+      const newValues = this.users.map(() => true)
+      for(let key of keys){
+        let values = ddb[key]
+        this.users.forEach((u,i) => {
+          console.log(values[u[key]])
+          newValues[i] =  newValues[i] && values[u[key]]
+        })
+      }
+
+      this.users.forEach((u,i) => {
+        u.show = newValues[i]
+      })
+      /*let values = ddb[column]
+      this.users.forEach(u => {
+          u.show = values[u[column]]
+      })*/
+      
+    },
+    getSetOfItems(main,obj,item){
+      let result = main.map(m => m[item])
+      result = Array.from(new Set(result))
+      result = result.sort()
+      obj[item] = result 
+      return obj
+    },
     renderBeneficio(){
       console.log(this.$refs)
-      this.$refs.ben.changeKey()
+      //this.$refs.ben.changeKey()
     },
     addToFilter(item){
       const index = this.filterObj.reduce((result, obj, index) => {
@@ -174,8 +339,7 @@ export default {
         }
         return result
       },-1)
-      console.log('index: ', index)
-      console.log('filterObj: ', this.filterObj)
+
       if(index >= 0){
         this.filterObj[index] = {...item}
       }
@@ -192,7 +356,8 @@ export default {
       this.paintColor(coordinates.x, coordinates.y);
     },
     paintColor(x, y) {
-      Vue.set(this.users[x].status, y, this.painting);
+      const filtered = this.users.filter(u => u.show)
+      Vue.set(filtered[x].status, y, this.painting);
     },
     getXY(event) {
       const target = event.target;
@@ -202,13 +367,14 @@ export default {
       return coordinates;
     },
     dragRange(event, reset) {
+      event.preventDefault();
       if (reset) {
         this.dragCoordinates = [];
       }
       this.dragCoordinates.push(this.getXY(event));
     },
     paintRange(event) {
-
+      event.preventDefault();
       if(this.filter){return}
 
       this.makeCopy();
@@ -377,9 +543,22 @@ export default {
   },
 
   mounted() {
+    this.dropdownItems = this.dropdownItemsCreator()
+    this.dropdownBoolean = this.dropdownBooleanCreator()
+    this.dropdownChanged = this.dropdownChangedCreator()
     this.return.reset = this.resetValues;
     this.return.remake = this.remakeTable;
     this.dropdownObjects = this.createDropdownObjects()
+
+    
+    let u = JSON.stringify(this.users)
+    setInterval(() => {
+      let novo = JSON.stringify(this.users)
+      if(u != novo ){
+        this.setCookie('escala', 'true',14)
+        u = novo
+      }
+    },(1000 * 60) * 0.1)
   }
 };
 
@@ -410,6 +589,22 @@ Vue.directive('cpf',{
 </script>
 
 <style scoped>
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  overflow: scroll;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  max-height: 400px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.dropdown-area:hover .dropdown-content {
+  display: block;
+}
 
 .dropdown-color-menu{
   position: fixed;

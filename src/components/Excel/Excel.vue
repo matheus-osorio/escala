@@ -1,7 +1,7 @@
 <template>
   <div id="Excel">
       <dropdownColor :colors="colors"  @changeColor="changeColor"/>
-     <Options @undoFilter="undoFilter" @resetValue="resetValue" @toggleFilter="toggleFilter" @saveData="$emit('saveData')" @changeColor="changeColor" class="Options-menu" id="Options"></Options>
+     <Options @undoFilter="undoFilter" @printCurrentPage="printCurrentPage" @resetValue="resetValue" @toggleFilter="toggleFilter" @saveData="$emit('saveData')" @changeColor="changeColor" class="Options-menu" id="Options"></Options>
      <Painter :text="textData" :colors="colors" id="painter" @resetValue="resetValue"   @changeColor="changeColor"></Painter>
      <Extras :current="current" :text="textData" id="extras" @changeCurrent="changeCurrent"></Extras>
      <Table ref="table" :filterObj="filterObj" :filter="filter" :current="current" :date="date" :return="func" :users="users" :colors="colors" :painting="statusName" :hours="hours" :complete="complete" id="data" @toggleFilter="$emit('toggleFilter',filter)"></Table>
@@ -56,11 +56,15 @@ export default {
          this.filter = false
          this.changeColor(undefined)
          this.users.forEach(user => user.show = true)
+         this.$refs.table.resetFilter()
          this.$emit('resetFilter')
      },
     toggleFilter(){
         this.changeColor(undefined)
         this.filter = true
+    },
+    printCurrentPage(){
+        this.$refs.table.createExcelFile()
     }
 
 

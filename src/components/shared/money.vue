@@ -8,7 +8,6 @@ export default {
     computed:{
         computedValue(){
             let value = this.original
-            console.log('value:',value)
             value = parseFloat(value).toFixed(2)
             const decimals = (value + '').split('.')[1] == undefined ? 0 :  (value + '').split('.')[1].length
 
